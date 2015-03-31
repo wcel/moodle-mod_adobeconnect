@@ -199,6 +199,11 @@ if ($usrcanjoin and confirm_sesskey($sesskey)) {
                    "join.php?id=$cm->id&groupid=$groupid&sesskey=$sesskey",
                    "Joined $adobeconnect->name meeting", $cm->id);
 
+        if (!empty($CFG->adobeconnect_uowssourl)) {
+            redirect($CFG->adobeconnect_uowssourl . $meeting->url);
+        }
+
+
         redirect($protocol . $CFG->adobeconnect_meethost . $port
                  . $meeting->url
                  . '?session=' . $aconnect->get_cookie());

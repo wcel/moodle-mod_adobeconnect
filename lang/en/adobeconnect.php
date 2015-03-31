@@ -162,3 +162,5 @@ $string['errorrecording'] = 'Unable to find recording session';
 $string['meetinfo'] = 'More Meeting Detail';
 $string['meetinfotxt'] = 'See server meeting details';
 $string['missingexpectedgroups'] = 'There are no groups available.';
+$string['uowssourl'] = 'UOW SSO URL';
+$string['uowssourl_desc'] ='The URL to redirect to for SSO authentication';

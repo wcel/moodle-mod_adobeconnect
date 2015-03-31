@@ -1,0 +1,135 @@
+commit 4d5cd18e4de102f62439edb078b08f4bc0b93a05
+Author: Troy Williams <troyw@waikato.ac.nz>
+Date:   Thu Mar 20 16:28:32 2014 +1300
+
+    Added SSO setting, removed assign roles button on view page
+
+diff --git a/join.php b/join.php
+index 005537b..37c0242 100644
+--- a/join.php
++++ b/join.php
+@@ -199,6 +199,11 @@ if ($usrcanjoin and confirm_sesskey($sesskey)) {
+                    "join.php?id=$cm->id&groupid=$groupid&sesskey=$sesskey",
+                    "Joined $adobeconnect->name meeting", $cm->id);
+ 
++        if (!empty($CFG->adobeconnect_uowssourl)) {
++            redirect($CFG->adobeconnect_uowssourl . $meeting->url);
++        }
++
++
+         redirect($protocol . $CFG->adobeconnect_meethost . $port
+                  . $meeting->url
+                  . '?session=' . $aconnect->get_cookie());
+diff --git a/joinrecording.php b/joinrecording.php
+index e2bd07c..7bc3992 100644
+--- a/joinrecording.php
++++ b/joinrecording.php
+@@ -131,5 +131,9 @@ $aconnect = new connect_class_dom($CFG->adobeconnect_host, $CFG->adobeconnect_po
+ $aconnect->request_http_header_login(1, $login);
+ $adobesession = $aconnect->get_cookie();
+ 
++if (!empty($CFG->adobeconnect_uowssourl)) {
++    redirect($CFG->adobeconnect_uowssourl . $meeting->url);
++}
++
+ redirect($protocol . $CFG->adobeconnect_meethost . $port
+                      . $recording->url . '?session=' . $aconnect->get_cookie());
+diff --git a/lang/en/adobeconnect.php b/lang/en/adobeconnect.php
+index beb6657..2de6329 100644
+--- a/lang/en/adobeconnect.php
++++ b/lang/en/adobeconnect.php
+@@ -166,3 +166,5 @@ $string['errorrecording'] = 'Unable to find recording session';
+ $string['meetinfo'] = 'More Meeting Detail';
+ $string['meetinfotxt'] = 'See server meeting details';
+ $string['missingexpectedgroups'] = 'There are no groups available.';
++$string['uowssourl'] = 'UOW SSO URL';
++$string['uowssourl_desc'] ='The URL to redirect to for SSO authentication';
+\ No newline at end of file
+diff --git a/renderer.php b/renderer.php
+index 521f73c..ea57e83 100644
+--- a/renderer.php
++++ b/renderer.php
+@@ -65,53 +65,6 @@ class mod_adobeconnect_renderer extends plugin_renderer_base {
+ 
+         $html .= html_writer::end_tag('div');
+ 
+-        // Display the meeting url and port if the user has the capabilities
+-        if ($meetingdetail->url) {
+-
+-            $param = array('class' => 'aconmeetinforow');
+-            $html .= html_writer::start_tag('div', $param);
+-
+-            // Print meeting URL label
+-            $param = array('class' => 'aconlabeltitle', 'id' => 'aconmeeturltitle');
+-            $html .= html_writer::start_tag('div', $param);
+-            $param = array('for' => 'lblmeetingurltitle');
+-            $html .= html_writer::tag('label', get_string('meeturl', 'adobeconnect'), $param);
+-            $html .= html_writer::end_tag('div');
+-
+-            // Print meeting URL value
+-            $param = array('class' => 'aconlabeltext', 'id' => 'aconmeeturltext');
+-            $html .= html_writer::start_tag('div', $param);
+-            $param = array('for' => 'lblmeetingurl');
+-            $html .= html_writer::tag('label', $meetingdetail->url, $param);
+-            $html .= html_writer::end_tag('div');
+-
+-            $html .= html_writer::end_tag('div');
+-
+-        }
+-
+-        if ($meetingdetail->servermeetinginfo) {
+-            $param = array('class' => 'aconmeetinforow');
+-            $html .= html_writer::start_tag('div', $param);
+-
+-            // Print meeting URL label
+-            $param = array('class' => 'aconlabeltitle', 'id' => 'aconmeeturlinfo');
+-            $html .= html_writer::start_tag('div', $param);
+-            $param = array('for' => 'lblmeetingurlinfo');
+-            $html .= html_writer::tag('label', get_string('meetinfo', 'adobeconnect'), $param);
+-            $html .= html_writer::end_tag('div');
+-
+-            // Print meeting URL value
+-            $param = array('class' => 'aconlabeltext', 'id' => 'aconmeeturlinfotext');
+-            $html .= html_writer::start_tag('div', $param);
+-            $param = array('target' => '_blank');
+-//            $html .= html_writer::tag('label', $meetingdetail->url, $param);
+-            $html .= html_writer::link($meetingdetail->servermeetinginfo, get_string('meetinfotxt', 'adobeconnect'), $param);
+-            $html .= html_writer::end_tag('div');
+-
+-            $html .= html_writer::end_tag('div');
+-
+-        }
+-
+         // Print meeting start time label and value
+         $param = array('class' => 'aconmeetinforow');
+         $html .= html_writer::start_tag('div', $param);
+@@ -201,15 +154,6 @@ class mod_adobeconnect_renderer extends plugin_renderer_base {
+         $html .= html_writer::empty_tag('input', $param);
+         $html .= html_writer::end_tag('div');
+ 
+-        $param = array('class' => 'aconbtnroles');
+-        $html .= html_writer::start_tag('div', $param);
+-        $param = array('type'=>'submit',
+-                       'value'=>get_string('selectparticipants','adobeconnect'),
+-                       'name'=>'participants',
+-                       );
+-        $html .= html_writer::empty_tag('input', $param);
+-        $html .= html_writer::end_tag('div');
+-
+         $html .= html_writer::end_tag('div');
+ 
+ 
+diff --git a/settings.php b/settings.php
+index 8c46e72..322669e 100644
+--- a/settings.php
++++ b/settings.php
+@@ -32,6 +32,9 @@ $PAGE->requires->js_init_call('M.mod_adobeconnect.init');
+     $settings->add(new admin_setting_configtext('adobeconnect_port', get_string('port', 'adobeconnect'),
+                        get_string('port_desc', 'adobeconnect'), '80', PARAM_INT));
+ 
++    $settings->add(new admin_setting_configtext('adobeconnect_uowssourl', get_string('uowssourl', 'adobeconnect'),
++                       get_string('uowssourl_desc', 'adobeconnect'), '', PARAM_URL));
++
+     $settings->add(new admin_setting_configtext('adobeconnect_admin_login', get_string('admin_login', 'adobeconnect'),
+                        get_string('admin_login_desc', 'adobeconnect'), 'admin', PARAM_TEXT));
+ 
