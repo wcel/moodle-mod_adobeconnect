@@ -19,6 +19,7 @@ $string['adobeconnectparticipant'] = 'Adobe Connect Participant';
 $string['adobeconnectparticipantdescription'] = 'Can view, but cannot modify any of the meeting settings';
 $string['adobeconnectpresenter'] = 'Adobe Connect Presenter';
 $string['adobeconnectpresenterdescription'] = 'The presenter of a meeting and can present content, share a screen, send text messages, moderate questions, create text notes, broadcast audio and video, and push content from web links';
+$string['adobeconnect:addinstance'] = 'Add a new Adobe Connect meeting';
 $string['allusers'] = 'all users';
 $string['assignadoberole'] = 'Assigning Adobe Roles';
 $string['assignadoberoles'] = 'Assigning $a->role role for $a->meetname ($a->groupname)';
