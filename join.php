@@ -218,6 +218,11 @@ if ($usrcanjoin and confirm_sesskey($sesskey)) {
         $event = \mod_adobeconnect\event\adobeconnect_join_meeting::create($params);
         $event->trigger();
 
+        if (!empty($CFG->adobeconnect_uowssourl)) {
+            redirect($CFG->adobeconnect_uowssourl . $meeting->url);
+        }
+
+
         redirect($protocol . $CFG->adobeconnect_meethost . $port
                  . $meeting->url
                  . '?session=' . $aconnect->get_cookie());

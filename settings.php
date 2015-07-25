@@ -38,6 +38,9 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext('adobeconnect_port', get_string('port', 'adobeconnect'),
                        get_string('port_desc', 'adobeconnect'), '80', PARAM_INT));
 
+    $settings->add(new admin_setting_configtext('adobeconnect_uowssourl', get_string('uowssourl', 'adobeconnect'),
+                       get_string('uowssourl_desc', 'adobeconnect'), '', PARAM_URL));
+
     $settings->add(new admin_setting_configtext('adobeconnect_admin_login', get_string('admin_login', 'adobeconnect'),
                        get_string('admin_login_desc', 'adobeconnect'), 'admin', PARAM_TEXT));
 
