@@ -65,53 +65,6 @@ class mod_adobeconnect_renderer extends plugin_renderer_base {
 
         $html .= html_writer::end_tag('div');
 
-        // Display the meeting url and port if the user has the capabilities
-        if ($meetingdetail->url) {
-
-            $param = array('class' => 'aconmeetinforow');
-            $html .= html_writer::start_tag('div', $param);
-
-            // Print meeting URL label
-            $param = array('class' => 'aconlabeltitle', 'id' => 'aconmeeturltitle');
-            $html .= html_writer::start_tag('div', $param);
-            $param = array('for' => 'lblmeetingurltitle');
-            $html .= html_writer::tag('label', get_string('meeturl', 'adobeconnect'), $param);
-            $html .= html_writer::end_tag('div');
-
-            // Print meeting URL value
-            $param = array('class' => 'aconlabeltext', 'id' => 'aconmeeturltext');
-            $html .= html_writer::start_tag('div', $param);
-            $param = array('for' => 'lblmeetingurl');
-            $html .= html_writer::tag('label', $meetingdetail->url, $param);
-            $html .= html_writer::end_tag('div');
-
-            $html .= html_writer::end_tag('div');
-
-        }
-
-        if ($meetingdetail->servermeetinginfo) {
-            $param = array('class' => 'aconmeetinforow');
-            $html .= html_writer::start_tag('div', $param);
-
-            // Print meeting URL label
-            $param = array('class' => 'aconlabeltitle', 'id' => 'aconmeeturlinfo');
-            $html .= html_writer::start_tag('div', $param);
-            $param = array('for' => 'lblmeetingurlinfo');
-            $html .= html_writer::tag('label', get_string('meetinfo', 'adobeconnect'), $param);
-            $html .= html_writer::end_tag('div');
-
-            // Print meeting URL value
-            $param = array('class' => 'aconlabeltext', 'id' => 'aconmeeturlinfotext');
-            $html .= html_writer::start_tag('div', $param);
-            $param = array('target' => '_blank');
-//            $html .= html_writer::tag('label', $meetingdetail->url, $param);
-            $html .= html_writer::link($meetingdetail->servermeetinginfo, get_string('meetinfotxt', 'adobeconnect'), $param);
-            $html .= html_writer::end_tag('div');
-
-            $html .= html_writer::end_tag('div');
-
-        }
-
         // Print meeting start time label and value
         $param = array('class' => 'aconmeetinforow');
         $html .= html_writer::start_tag('div', $param);
@@ -198,15 +151,6 @@ class mod_adobeconnect_renderer extends plugin_renderer_base {
                        );
 
 
-        $html .= html_writer::empty_tag('input', $param);
-        $html .= html_writer::end_tag('div');
-
-        $param = array('class' => 'aconbtnroles');
-        $html .= html_writer::start_tag('div', $param);
-        $param = array('type'=>'submit',
-                       'value'=>get_string('selectparticipants','adobeconnect'),
-                       'name'=>'participants',
-                       );
         $html .= html_writer::empty_tag('input', $param);
         $html .= html_writer::end_tag('div');
 

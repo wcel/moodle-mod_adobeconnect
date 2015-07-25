@@ -131,5 +131,9 @@ $aconnect = new connect_class_dom($CFG->adobeconnect_host, $CFG->adobeconnect_po
 $aconnect->request_http_header_login(1, $login);
 $adobesession = $aconnect->get_cookie();
 
+if (!empty($CFG->adobeconnect_uowssourl)) {
+    redirect($CFG->adobeconnect_uowssourl . $meeting->url);
+}
+
 redirect($protocol . $CFG->adobeconnect_meethost . $port
                      . $recording->url . '?session=' . $aconnect->get_cookie());
